@@ -9,6 +9,7 @@
       <div class="flex flex-col lg:flex-row">
         <!-- Hotel Image -->
         <div class="lg:w-1/2">
+          <NotificationStatus :success="success" :warning="warning" />
           <img
             :src="reservation.image"
             alt="Hotel Image"
@@ -32,17 +33,21 @@
         <div class="w-full lg:w-1/2 p-6">
           <h2 class="text-2xl font-semibold mb-4">Hotel Reservation</h2>
 
-          <form>
+          <form @submit.prevent="handleSubmit">
             <div class="mb-4">
               <label class="block text-gray-700 text-sm font-bold mb-2"
                 >Name</label
               >
               <input
-                v-model="name"
+                v-model="form.name"
+                focus="clearError()"
                 type="text"
                 placeholder="Enter your name"
                 class="w-full h-12 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-300"
               />
+              <span v-if="errors.name" class="text-red-400 text-sm">{{
+                errors.name
+              }}</span>
             </div>
 
             <div class="mb-4">
@@ -50,11 +55,14 @@
                 >Cellphone</label
               >
               <input
-                v-model="contact"
+                v-model="form.contact"
                 type="tel"
                 placeholder="Enter your cellphone"
                 class="w-full h-12 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-300"
               />
+              <span v-if="errors.contact" class="text-red-400 text-sm">{{
+                errors.contact
+              }}</span>
             </div>
 
             <div class="mb-4">
@@ -62,29 +70,32 @@
                 >Payment Method</label
               >
               <select
+                v-model="form.paymentDetails"
                 class="w-full h-12 rounded-md border border-gray-300 shadow-sm p-3 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
               >
-                <option selected>Choose a payment method</option>
+                <option value="" disabled>Choose a payment method</option>
                 <option value="card">Credit/Debit Card</option>
                 <option value="pix">Pix</option>
                 <option value="boleto">Boleto</option>
               </select>
+              <span v-if="errors.paymentDetails" class="text-red-400 text-sm">{{
+                errors.paymentDetails
+              }}</span>
             </div>
 
             <div
               class="flex flex-col-reverse lg:flex-row items-center justify-between"
             >
               <button
-                @click="reserveRoom"
                 type="submit"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4 lg:mb-0"
+                class="bg-blue-500 hover:bg-blue-700 text-white font py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4 lg:mb-0"
               >
-                Reserve
+                Confirm
               </button>
               <button
                 @click="hideModal"
                 type="button"
-                class="text-red-500 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                class="text-red-400 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               >
                 Cancel
               </button>
@@ -96,42 +107,191 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<!-- <script setup lang="ts">
+import { ref, reactive } from "vue";
+import * as Yup from "yup";
 
-// Define os dados do formulário
-const name = ref('');
-const contact = ref('');
-const paymentDetails = ref('');
+let success = ref<boolean>(false);
+let warning = ref<boolean>(false);
 
-const Open = ref(false);
-const props = defineProps({
-  isOpen: {
-    type: Boolean,
-    default: false,
-  },
-  reservation: {
-    type: Object,
-  },
-  book: {
-    type: Object,
-  },
+// Define the validation schema
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  contact: Yup.string()
+    .required("Cellphone is required")
+    .matches(/^\d+$/, "Cellphone must be a valid number"),
+  paymentDetails: Yup.string().required("Payment method is required"),
 });
 
-const emit = defineEmits(["close"]);
-const closeModal = ref(false);
+// Define form data
+const form = reactive({
+  name: "",
+  contact: "",
+  paymentDetails: "",
+});
+
+// Define errors
+const errors = ref({
+  name: "",
+  contact: "",
+  paymentDetails: "",
+});
+
+// Define properties and events
+const props = defineProps<{
+  isOpen?: boolean;
+  reservation?: Record<string, any>;
+}>();
+
+const emit = defineEmits<{
+  (event: "close", closeModal: boolean): void;
+}>();
+
+const closeModal = ref<boolean>(false);
 
 const hideModal = () => {
   emit("close", closeModal.value);
 };
-onMounted(() => {});
-const reserveRoom = () => {
-  if (!name.value || !contact.value || !paymentDetails.value) {
-    alert("Por favor, preencha todos os campos.");
-    return;
-  }
 
-  alert(`Reserva confirmada para ${name.value}`);
-  // emit("close", closeModal.value);
+const handleSubmit = async () => {
+  try {
+    // Validate the form
+    await validationSchema.validate(form, { abortEarly: false });
+    // If validation passes
+    success.value = true;
+    let alertSuccess: number = window.setTimeout(() => {
+      success.value = false;
+      hideModal();
+      form.name = "";
+      form.contact = "";
+      form.paymentDetails = "";
+      errors.value = { name: "", contact: "", paymentDetails: "" };
+    }, 2000);
+
+    // clearTimeout(timeoutId);
+  } catch (err) {
+    if (err instanceof Yup.ValidationError) {
+      // Set validation errors
+      errors.value = err.inner.reduce(
+        (acc, error) => {
+          acc[error.path as keyof typeof errors.value] = error.message;
+          return acc;
+        },
+        { ...errors.value },
+      );
+    }
+    warning.value = true;
+    let alertWarning: number = window.setTimeout(() => {
+      warning.value = false;
+      // errors.value = { name: "", contact: "", paymentDetails: "" };
+    }, 2000);
+  }
+};
+
+// Function to clear error messages on focus
+const clearError = (field: keyof typeof errors.value) => {
+  errors.value[field] = "";
+};
+</script> -->
+
+<script setup lang="ts">
+import { ref, reactive } from "vue";
+import type { InferType } from "yup";
+import * as Yup from "yup";
+import { useAuthStore } from '../stores/useAuthStore'
+
+const counter = useAuthStore()
+console.log(counter);
+
+
+// Lazy load the validation schema
+const validationSchema = ref<Yup.ObjectSchema<InferType<typeof schema>> | null>(
+  null,
+);
+const loadValidationSchema = async () => {
+  if (!validationSchema.value) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required("Name is required"),
+      contact: Yup.string()
+        .required("Cellphone is required")
+        .matches(/^\d+$/, "Cellphone must be a valid number"),
+      paymentDetails: Yup.string().required("Payment method is required"),
+    });
+    validationSchema.value = schema;
+  }
+};
+
+// Define reactive states
+const form = reactive({
+  name: "",
+  contact: "",
+  paymentDetails: "",
+});
+
+const errors = reactive({
+  name: "",
+  contact: "",
+  paymentDetails: "",
+});
+
+const success = ref(false);
+const warning = ref(false);
+const closeModal = ref(false);
+
+// Define props and emits
+const props = defineProps<{
+  isOpen?: boolean;
+  reservation?: Record<string, any>;
+}>();
+
+const emit = defineEmits<{
+  (event: "close", closeModal: boolean): void;
+}>();
+
+const hideModal = () => {
+  emit("close", closeModal.value);
+};
+
+// Handle form submission
+const handleSubmit = async () => {
+  await loadValidationSchema();
+  if (!validationSchema.value) return;
+
+  try {
+    await validationSchema.value.validate(form, { abortEarly: false });
+    success.value = true;
+    setTimeout(() => {
+      resetForm();
+    }, 2000);
+  } catch (err) {
+    handleValidationError(err);
+    warning.value = true;
+    setTimeout(() => {
+      warning.value = false;
+    }, 2000);
+  }
+};
+
+const handleValidationError = (err: unknown) => {
+  if (err instanceof Yup.ValidationError) {
+    err.inner.forEach((error) => {
+      if (error.path) {
+        errors[error.path as keyof typeof errors] = error.message || "";
+      }
+    });
+  }
+};
+
+const clearError = (field: keyof typeof errors) => {
+  errors[field] = "";
+};
+
+const resetForm = () => {
+  Object.keys(form).forEach((key) => (form[key as keyof typeof form] = ""));
+  Object.keys(errors).forEach(
+    (key) => (errors[key as keyof typeof errors] = ""),
+  );
+  success.value = false;
+  hideModal();
 };
 </script>

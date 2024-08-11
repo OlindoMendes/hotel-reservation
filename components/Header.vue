@@ -13,8 +13,6 @@
       </div>
     </nav>
     </header>
-    <div>
-      <slot />
-    </div>
+  
   </div>
 </template>
