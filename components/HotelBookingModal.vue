@@ -109,10 +109,6 @@
 import { ref, reactive } from "vue";
 import type { InferType } from "yup";
 import * as Yup from "yup";
-import { useAuthStore } from "../stores/useAuthStore";
-
-const counter = useAuthStore();
-console.log(counter);
 
 const validationSchema = ref<Yup.ObjectSchema<InferType<typeof schema>> | null>(
   null,
@@ -147,7 +143,6 @@ const warning = ref(false);
 const closeModal = ref(false);
 const response = ref<any>(null);
 
-// Define props and emits
 const props = defineProps<{
   isOpen?: boolean;
   reservation?: Record<string, any>;

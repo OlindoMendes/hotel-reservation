@@ -82,6 +82,6 @@ async function validateAndLogin(): Promise<void> {
 
 async function login(): Promise<void> {
   await auth.login(email.value, password.value);
-  router.push({ name: "hotels" });
+  router.push({ name: "booking" });
 }
 </script>

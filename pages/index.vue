@@ -1,5 +1,3 @@
 <template>
-  <div>
-    <Login />
-  </div>
+  <SearchHotel />
 </template>

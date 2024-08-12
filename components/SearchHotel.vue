@@ -159,7 +159,7 @@
               {{ hotel.price }} /night
             </p>
             <div class="flex">
-              <p class="mr-2">Hotels combined</p>
+              <p class="mr-2">Compare hotels</p>
               <input
                 type="checkbox"
                 :value="hotel"
@@ -201,6 +201,10 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import type { Hotel, Guests } from "../types/index";
+
+definePageMeta({
+  middleware: "auth",
+});
 
 const transform = { transform: (_hotels) => _hotels.data };
 const { data: hotels } = await useLazyFetch("/api/hotels", transform);
