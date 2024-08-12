@@ -165,7 +165,6 @@ const hideModal = () => {
   emit("close", closeModal.value);
 };
 
-// Handle form submission
 const handleSubmit = async () => {
   await loadValidationSchema();
   if (!validationSchema.value) return;
@@ -176,24 +175,7 @@ const handleSubmit = async () => {
     setTimeout(() => {
       resetForm();
     }, 2000);
-
-    const res = await fetch("/api/booking", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: form.name,
-        cellphone: form.contact,
-        payment: form.paymentDetails,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    response.value = await res.json();
+    submitBooking();
   } catch (err) {
     handleValidationError(err);
     warning.value = true;
@@ -215,6 +197,30 @@ const handleValidationError = (err: unknown) => {
 
 const clearError = (field: keyof typeof errors) => {
   errors[field] = "";
+};
+
+const submitBooking = async () => {
+  try {
+    const res = await fetch("/api/booking", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name,
+        cellphone: form.contact,
+        payment: form.paymentDetails,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    response.value = await res.json();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const resetForm = () => {
