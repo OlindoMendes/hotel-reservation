@@ -149,6 +149,7 @@ const errors = reactive({
 const success = ref(false);
 const warning = ref(false);
 const closeModal = ref(false);
+const response = ref<any>(null);
 
 // Define props and emits
 const props = defineProps<{
@@ -175,6 +176,24 @@ const handleSubmit = async () => {
     setTimeout(() => {
       resetForm();
     }, 2000);
+
+    const res = await fetch("/api/booking", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name,
+        cellphone: form.contact,
+        payment: form.paymentDetails,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    response.value = await res.json();
   } catch (err) {
     handleValidationError(err);
     warning.value = true;
