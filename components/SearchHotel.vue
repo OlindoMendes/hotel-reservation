@@ -209,6 +209,10 @@ import type { Hotel, Guests } from "../types/index";
 // Define types for hotel and guests
 
 // Reactive state
+const transform = {transform:(_products)=> _products.data}
+const { data: products } = await useFetch("/api/hotels", transform);
+console.log(toRaw(products.value));
+
 const destination = ref<string>("");
 const checkInDate = ref<string>("");
 const checkOutDate = ref<string>("");
