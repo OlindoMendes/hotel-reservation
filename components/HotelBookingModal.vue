@@ -7,7 +7,6 @@
       class="bg-white rounded-lg overflow-hidden shadow-lg max-w-4xl w-full mx-4 sm:mx-8 lg:mx-16"
     >
       <div class="flex flex-col lg:flex-row">
-        <!-- Hotel Image -->
         <div class="lg:w-1/2">
           <NotificationStatus :success="success" :warning="warning" />
           <img
@@ -29,7 +28,6 @@
           </div>
         </div>
 
-        <!-- Form -->
         <div class="w-full lg:w-1/2 p-6">
           <h2 class="text-2xl font-semibold mb-4">Hotel Reservation</h2>
 
@@ -116,7 +114,6 @@ import { useAuthStore } from "../stores/useAuthStore";
 const counter = useAuthStore();
 console.log(counter);
 
-// Lazy load the validation schema
 const validationSchema = ref<Yup.ObjectSchema<InferType<typeof schema>> | null>(
   null,
 );
@@ -133,7 +130,6 @@ const loadValidationSchema = async () => {
   }
 };
 
-// Define reactive states
 const form = reactive({
   name: "",
   contact: "",

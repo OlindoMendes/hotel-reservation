@@ -1,7 +1,6 @@
 <template>
   <div>
     <header class="shadow-sm bg-white" id="myTopnav">
-       <!-- Navbar -->
     <nav class="bg-blue-600 p-4">
       <div class="container mx-auto flex justify-between items-center">
         <a href="#" class="text-white text-lg font-semibold">HotelFinder</a>

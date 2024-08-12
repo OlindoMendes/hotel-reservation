@@ -1,9 +1,7 @@
 <template>
   <div class="bg-gray-100">
- 
     <section class="bg-white py-16">
       <div class="container mx-auto px-4 text-center">
-        {{ products }}
         <h1 class="text-4xl font-bold text-gray-800">
           Find Your Perfect Hotel
         </h1>
@@ -11,7 +9,6 @@
           Book hotels at the best prices with ease.
         </p>
 
-      
         <form class="mt-8 max-w-full mx-auto">
           <div
             class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4"
@@ -124,7 +121,6 @@
       </div>
     </section>
 
-    <!-- Hotel Results Section -->
     <section class="py-16">
       <div class="container mx-auto px-4">
         <h2 class="text-3xl font-semibold text-gray-800 mb-8">
@@ -138,7 +134,6 @@
             <option value="price">Price</option>
             <option value="rating">Ratings</option>
             <option value="name">Name</option>
-            <!-- Adicione mais critérios conforme necessário -->
           </select>
         </div>
 
@@ -195,7 +190,6 @@
       @close="closeModal"
     />
 
-    <!-- Footer -->
     <footer class="bg-blue-600 py-4">
       <div class="container mx-auto text-center text-white">
         <p>&copy; 2024 HotelFinder. All rights reserved.</p>
@@ -208,9 +202,8 @@
 import { ref, computed } from "vue";
 import type { Hotel, Guests } from "../types/index";
 
-const transform = { transform: (_products) => _products.data };
+const transform = { transform: (_hotels) => _hotels.data };
 const { data: hotels } = await useLazyFetch("/api/hotels", transform);
-console.log(toRaw(hotels.value));
 
 const destination = ref<string>("");
 const checkInDate = ref<string>("");
@@ -220,7 +213,7 @@ const isOpen = ref<boolean>(false);
 const adults = ref<number>(1);
 const children = ref<number>(0);
 const rooms = ref<number>(1);
-const sortBy = ref<string>("price");
+const sortBy = ref<string>("name");
 const openModal = ref<boolean>(false);
 const reservation = ref<Hotel | null>(null);
 const guests = ref<Guests>({
@@ -232,23 +225,23 @@ const guests = ref<Guests>({
 });
 
 const filteredHotels = computed(() => {
-  let result = hotels.value;
-
   if (destination.value) {
-    result = result.filter((hotel) =>
+    return hotels.value.filter((hotel) =>
       hotel.location.toLowerCase().includes(destination.value.toLowerCase()),
     );
   }
 
   switch (sortBy.value) {
     case "price":
-      return result.sort((room, hotel) => room.price - hotel.price);
+      return hotels.value.sort((room, hotel) => room.price - hotel.price);
     case "rating":
-      return result.sort((room, hotel) => hotel.rating - room.rating);
+      return hotels.value.sort((room, hotel) => hotel.rating - room.rating);
     case "name":
-      return result.sort((room, hotel) => room.name.localeCompare(hotel.name));
+      return hotels.value.sort((room, hotel) =>
+        room.name.localeCompare(hotel.name),
+      );
     default:
-      return result;
+      return hotels.value;
   }
 });
 

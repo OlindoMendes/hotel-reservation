@@ -1,5 +1,9 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { useRouter } from "vue-router";
+
+
+
 
 interface User {
   id: string;
@@ -8,6 +12,7 @@ interface User {
 }
 
 export const useAuthStore = defineStore('auth', () => {
+  const router = useRouter();
   const user = ref<User | null>(null);
   const token = ref<string | null>(null);
 
@@ -21,6 +26,9 @@ export const useAuthStore = defineStore('auth', () => {
 
       // Armazenar o token em localStorage ou cookies, se necessário
       localStorage.setItem('authToken', response.token);
+      console.log('HERE ', router);
+      
+      router.push("/hotels");
     } catch (error) {
       console.error('Erro ao fazer login:', error);
     }
