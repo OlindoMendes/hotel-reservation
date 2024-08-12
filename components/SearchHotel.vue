@@ -3,6 +3,7 @@
     <!-- Hero Section -->
     <section class="bg-white py-16">
       <div class="container mx-auto px-4 text-center">
+        {{ products }}
         <h1 class="text-4xl font-bold text-gray-800">
           Find Your Perfect Hotel
         </h1>
@@ -204,14 +205,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from "vue";
+import { ref, computed } from "vue";
 import type { Hotel, Guests } from "../types/index";
 // Define types for hotel and guests
 
 // Reactive state
-const transform = {transform:(_products)=> _products.data}
-const { data: products } = await useFetch("/api/hotels", transform);
-console.log(toRaw(products.value));
+const transform = { transform: (_products) => _products.data };
+const { data: hotels } = await useFetch("/api/hotels", transform);
+console.log(toRaw(hotels.value));
 
 const destination = ref<string>("");
 const checkInDate = ref<string>("");
@@ -233,108 +234,108 @@ const guests = ref<Guests>({
 });
 
 // Lazy load hotel data
-const hotels = reactive<Hotel[]>([
-  {
-    id: 1,
-    name: "Hotel Sunshine",
-    location: "Rio de Janeiro",
-    price: "$ 150",
-    image: "/images/image1.png",
-    rating: 4.5,
-  },
-  {
-    id: 2,
-    name: "Mountain Retreat",
-    location: "Campos do Jordão",
-    price: "$ 200",
-    image: "/images/image2.png",
-    rating: 3.5,
-  },
-  {
-    id: 3,
-    name: "City Lights Hotel",
-    location: "São Paulo",
-    price: "$ 180",
-    image: "/images/image3.png",
-    rating: 4,
-  },
-  {
-    id: 4,
-    name: "Beachfront Paradise",
-    location: "Florianópolis",
-    price: 220,
-    image: "/images/image5.png",
-    rating: 4.5,
-  },
-  {
-    id: 5,
-    name: "Luxury Stay",
-    location: "Curitiba",
-    price: "$ 250",
-    image: "/images/image4.png",
-    rating: 5,
-  },
-  {
-    id: 6,
-    name: "Budget Inn",
-    location: "Porto Alegre",
-    price: "$ 100",
-    image: "/images/image6.png",
-    rating: 3.5,
-  },
-  {
-    id: 7,
-    name: "Urban Escape",
-    location: "Salvador",
-    price: "$ 190",
-    image: "/images/image7.png",
-    rating: 4,
-  },
-  {
-    id: 8,
-    name: "Seaside Resort",
-    location: "Recife",
-    price: "$ 210",
-    image: "/images/image8.png",
-    rating: 5,
-  },
-  {
-    id: 9,
-    name: "Cozy Cottage",
-    location: "Gramado",
-    price: "$ 130",
-    image: "/images/image9.png",
-    rating: 3.5,
-  },
-  {
-    id: 10,
-    name: "Business Hotel",
-    location: "Belo Horizonte",
-    price: "$ 170",
-    image: "/images/image10.png",
-    rating: 4,
-  },
-  {
-    id: 11,
-    name: "Boutique Hotel",
-    location: "Brasília",
-    price: "$ 240",
-    image: "/images/image11.png",
-    rating: 5,
-  },
-  {
-    id: 12,
-    name: "Desert Oasis",
-    location: "Natal",
-    price: "$ 300",
-    image: "/images/image12.png",
-    rating: 4,
-  },
-]);
+// const hotels = reactive<Hotel[]>([
+//   {
+//     id: 1,
+//     name: "Hotel Sunshine",
+//     location: "Rio de Janeiro",
+//     price: "$ 150",
+//     image: "/images/image1.png",
+//     rating: 4.5,
+//   },
+//   {
+//     id: 2,
+//     name: "Mountain Retreat",
+//     location: "Campos do Jordão",
+//     price: "$ 200",
+//     image: "/images/image2.png",
+//     rating: 3.5,
+//   },
+//   {
+//     id: 3,
+//     name: "City Lights Hotel",
+//     location: "São Paulo",
+//     price: "$ 180",
+//     image: "/images/image3.png",
+//     rating: 4,
+//   },
+//   {
+//     id: 4,
+//     name: "Beachfront Paradise",
+//     location: "Florianópolis",
+//     price: 220,
+//     image: "/images/image5.png",
+//     rating: 4.5,
+//   },
+//   {
+//     id: 5,
+//     name: "Luxury Stay",
+//     location: "Curitiba",
+//     price: "$ 250",
+//     image: "/images/image4.png",
+//     rating: 5,
+//   },
+//   {
+//     id: 6,
+//     name: "Budget Inn",
+//     location: "Porto Alegre",
+//     price: "$ 100",
+//     image: "/images/image6.png",
+//     rating: 3.5,
+//   },
+//   {
+//     id: 7,
+//     name: "Urban Escape",
+//     location: "Salvador",
+//     price: "$ 190",
+//     image: "/images/image7.png",
+//     rating: 4,
+//   },
+//   {
+//     id: 8,
+//     name: "Seaside Resort",
+//     location: "Recife",
+//     price: "$ 210",
+//     image: "/images/image8.png",
+//     rating: 5,
+//   },
+//   {
+//     id: 9,
+//     name: "Cozy Cottage",
+//     location: "Gramado",
+//     price: "$ 130",
+//     image: "/images/image9.png",
+//     rating: 3.5,
+//   },
+//   {
+//     id: 10,
+//     name: "Business Hotel",
+//     location: "Belo Horizonte",
+//     price: "$ 170",
+//     image: "/images/image10.png",
+//     rating: 4,
+//   },
+//   {
+//     id: 11,
+//     name: "Boutique Hotel",
+//     location: "Brasília",
+//     price: "$ 240",
+//     image: "/images/image11.png",
+//     rating: 5,
+//   },
+//   {
+//     id: 12,
+//     name: "Desert Oasis",
+//     location: "Natal",
+//     price: "$ 300",
+//     image: "/images/image12.png",
+//     rating: 4,
+//   },
+// ]);
 
 // Computed property for filtering and sorting hotels
 const filteredHotels = computed(() => {
-  let result = hotels;
+  let result = hotels.value;
 
   if (destination.value) {
     result = result.filter((hotel) =>
@@ -387,7 +388,7 @@ const saveSelection = () => {
 // Make a reservation
 const makeReservation = (id: number) => {
   openModal.value = true;
-  reservation.value = hotels.find((hotel) => hotel.id === id) || null;
+  reservation.value = hotels.value.find((hotel) => hotel.id === id) || null;
 };
 
 // Close modal

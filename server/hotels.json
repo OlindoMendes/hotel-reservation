@@ -36,8 +36,8 @@
     "name": "Luxury Stay",
     "location": "Curitiba",
     "price": "$ 250",
-   " image": "/images/image4.png",
-   " rating": 5
+    "image": "/images/image4.png",
+    "rating": 5
   },
   {
    " id": 6,

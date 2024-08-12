@@ -107,102 +107,14 @@
   </div>
 </template>
 
-<!-- <script setup lang="ts">
-import { ref, reactive } from "vue";
-import * as Yup from "yup";
-
-let success = ref<boolean>(false);
-let warning = ref<boolean>(false);
-
-// Define the validation schema
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  contact: Yup.string()
-    .required("Cellphone is required")
-    .matches(/^\d+$/, "Cellphone must be a valid number"),
-  paymentDetails: Yup.string().required("Payment method is required"),
-});
-
-// Define form data
-const form = reactive({
-  name: "",
-  contact: "",
-  paymentDetails: "",
-});
-
-// Define errors
-const errors = ref({
-  name: "",
-  contact: "",
-  paymentDetails: "",
-});
-
-// Define properties and events
-const props = defineProps<{
-  isOpen?: boolean;
-  reservation?: Record<string, any>;
-}>();
-
-const emit = defineEmits<{
-  (event: "close", closeModal: boolean): void;
-}>();
-
-const closeModal = ref<boolean>(false);
-
-const hideModal = () => {
-  emit("close", closeModal.value);
-};
-
-const handleSubmit = async () => {
-  try {
-    // Validate the form
-    await validationSchema.validate(form, { abortEarly: false });
-    // If validation passes
-    success.value = true;
-    let alertSuccess: number = window.setTimeout(() => {
-      success.value = false;
-      hideModal();
-      form.name = "";
-      form.contact = "";
-      form.paymentDetails = "";
-      errors.value = { name: "", contact: "", paymentDetails: "" };
-    }, 2000);
-
-    // clearTimeout(timeoutId);
-  } catch (err) {
-    if (err instanceof Yup.ValidationError) {
-      // Set validation errors
-      errors.value = err.inner.reduce(
-        (acc, error) => {
-          acc[error.path as keyof typeof errors.value] = error.message;
-          return acc;
-        },
-        { ...errors.value },
-      );
-    }
-    warning.value = true;
-    let alertWarning: number = window.setTimeout(() => {
-      warning.value = false;
-      // errors.value = { name: "", contact: "", paymentDetails: "" };
-    }, 2000);
-  }
-};
-
-// Function to clear error messages on focus
-const clearError = (field: keyof typeof errors.value) => {
-  errors.value[field] = "";
-};
-</script> -->
-
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import type { InferType } from "yup";
 import * as Yup from "yup";
-import { useAuthStore } from '../stores/useAuthStore'
+import { useAuthStore } from "../stores/useAuthStore";
 
-const counter = useAuthStore()
+const counter = useAuthStore();
 console.log(counter);
-
 
 // Lazy load the validation schema
 const validationSchema = ref<Yup.ObjectSchema<InferType<typeof schema>> | null>(
