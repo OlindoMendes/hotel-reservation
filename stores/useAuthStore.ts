@@ -52,12 +52,11 @@ export const useAuthStore = defineStore('auth', () => {
   };
 });
 
-// Função de simulação de API
 async function fakeApiLogin(email: string, password: string) {
   return new Promise<{ user: User; token: string }>((resolve) => {
     setTimeout(() => {
       resolve({
-        user: { id: '1', name: 'John Doe', email: 'john@example.com' },
+        user: { id: '1', name: 'Olindo Mendes', email: 'olindo@mendes.com' },
         token: 'fake-jwt-token',
       });
     }, 1000);

@@ -1,6 +1,6 @@
 <template>
   <div class="bg-gray-100">
-    <!-- Hero Section -->
+ 
     <section class="bg-white py-16">
       <div class="container mx-auto px-4 text-center">
         {{ products }}
@@ -11,7 +11,7 @@
           Book hotels at the best prices with ease.
         </p>
 
-        <!-- Search Form -->
+      
         <form class="mt-8 max-w-full mx-auto">
           <div
             class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4"
@@ -207,11 +207,9 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import type { Hotel, Guests } from "../types/index";
-// Define types for hotel and guests
 
-// Reactive state
 const transform = { transform: (_products) => _products.data };
-const { data: hotels } = await useFetch("/api/hotels", transform);
+const { data: hotels } = await useLazyFetch("/api/hotels", transform);
 console.log(toRaw(hotels.value));
 
 const destination = ref<string>("");
@@ -233,107 +231,6 @@ const guests = ref<Guests>({
   checkout: "",
 });
 
-// Lazy load hotel data
-// const hotels = reactive<Hotel[]>([
-//   {
-//     id: 1,
-//     name: "Hotel Sunshine",
-//     location: "Rio de Janeiro",
-//     price: "$ 150",
-//     image: "/images/image1.png",
-//     rating: 4.5,
-//   },
-//   {
-//     id: 2,
-//     name: "Mountain Retreat",
-//     location: "Campos do Jordão",
-//     price: "$ 200",
-//     image: "/images/image2.png",
-//     rating: 3.5,
-//   },
-//   {
-//     id: 3,
-//     name: "City Lights Hotel",
-//     location: "São Paulo",
-//     price: "$ 180",
-//     image: "/images/image3.png",
-//     rating: 4,
-//   },
-//   {
-//     id: 4,
-//     name: "Beachfront Paradise",
-//     location: "Florianópolis",
-//     price: 220,
-//     image: "/images/image5.png",
-//     rating: 4.5,
-//   },
-//   {
-//     id: 5,
-//     name: "Luxury Stay",
-//     location: "Curitiba",
-//     price: "$ 250",
-//     image: "/images/image4.png",
-//     rating: 5,
-//   },
-//   {
-//     id: 6,
-//     name: "Budget Inn",
-//     location: "Porto Alegre",
-//     price: "$ 100",
-//     image: "/images/image6.png",
-//     rating: 3.5,
-//   },
-//   {
-//     id: 7,
-//     name: "Urban Escape",
-//     location: "Salvador",
-//     price: "$ 190",
-//     image: "/images/image7.png",
-//     rating: 4,
-//   },
-//   {
-//     id: 8,
-//     name: "Seaside Resort",
-//     location: "Recife",
-//     price: "$ 210",
-//     image: "/images/image8.png",
-//     rating: 5,
-//   },
-//   {
-//     id: 9,
-//     name: "Cozy Cottage",
-//     location: "Gramado",
-//     price: "$ 130",
-//     image: "/images/image9.png",
-//     rating: 3.5,
-//   },
-//   {
-//     id: 10,
-//     name: "Business Hotel",
-//     location: "Belo Horizonte",
-//     price: "$ 170",
-//     image: "/images/image10.png",
-//     rating: 4,
-//   },
-//   {
-//     id: 11,
-//     name: "Boutique Hotel",
-//     location: "Brasília",
-//     price: "$ 240",
-//     image: "/images/image11.png",
-//     rating: 5,
-//   },
-//   {
-//     id: 12,
-//     name: "Desert Oasis",
-//     location: "Natal",
-//     price: "$ 300",
-//     image: "/images/image12.png",
-//     rating: 4,
-//   },
-// ]);
-
-// Computed property for filtering and sorting hotels
 const filteredHotels = computed(() => {
   let result = hotels.value;
 
@@ -345,17 +242,16 @@ const filteredHotels = computed(() => {
 
   switch (sortBy.value) {
     case "price":
-      return result.sort((a, b) => a.price - b.price);
+      return result.sort((room, hotel) => room.price - hotel.price);
     case "rating":
-      return result.sort((a, b) => b.rating - a.rating);
+      return result.sort((room, hotel) => hotel.rating - room.rating);
     case "name":
-      return result.sort((a, b) => a.name.localeCompare(b.name));
+      return result.sort((room, hotel) => room.name.localeCompare(hotel.name));
     default:
       return result;
   }
 });
 
-// Toggle hotel selection for comparison
 const toggleHotelSelection = (hotel: Hotel) => {
   const index = selectedHotels.value.findIndex(
     (selected) => selected.id === hotel.id,
@@ -368,12 +264,10 @@ const toggleHotelSelection = (hotel: Hotel) => {
   }
 };
 
-// Toggle dropdown visibility
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
-// Save guest selection
 const saveSelection = () => {
   guests.value = {
     rooms: rooms.value,
@@ -385,224 +279,12 @@ const saveSelection = () => {
   isOpen.value = false;
 };
 
-// Make a reservation
 const makeReservation = (id: number) => {
   openModal.value = true;
   reservation.value = hotels.value.find((hotel) => hotel.id === id) || null;
 };
 
-// Close modal
 const closeModal = (payload: boolean) => {
   openModal.value = payload;
-};
-
-// Combine selected hotels (Placeholder function)
-const combineHotels = (close: boolean) => {
-  console.log("Combine Hotels:", close);
 };
 </script>
-
-<!-- <script setup lang="ts">
-import { ref, computed, reactive } from "vue";
-
-// Define types for hotel and guests
-interface Hotel {
-  id: number;
-  name: string;
-  location: string;
-  price: number;
-  image: string;
-  rating: number;
-}
-
-interface Guests {
-  rooms: number;
-  adults: number;
-  children: number;
-  checkin: string;
-  checkout: string;
-}
-
-// Reactive state
-const destination = ref<string>("");
-const checkInDate = ref<string>("");
-const checkOutDate = ref<string>("");
-const selectedHotels = ref<string[]>([]);
-const isOpen = ref<boolean>(false);
-const adults = ref<number>(1);
-const children = ref<number>(0);
-const rooms = ref<number>(1);
-const sortBy = ref<string>("price");
-const openModal = ref<boolean>(false);
-const reservation = ref<Hotel | null>(null);
-const guests = ref<Guests>({
-  rooms: 1,
-  adults: 1,
-  children: 0,
-  checkin: "",
-  checkout: "",
-});
-
-// Hotel data
-const hotels = reactive<Hotel[]>([
-  {
-    id: 1,
-    name: "Hotel Sunshine",
-    location: "Rio de Janeiro",
-    price: 150,
-    image: "/images/image1.png",
-    rating: 4.5,
-  },
-  {
-    id: 2,
-    name: "Mountain Retreat",
-    location: "Campos do Jordão",
-    price: 200,
-    image: "/images/image2.png",
-    rating: 3.5,
-  },
-  {
-    id: 3,
-    name: "City Lights Hotel",
-    location: "São Paulo",
-    price: 180,
-    image: "/images/image3.png",
-    rating: 4,
-  },
-  {
-    id: 4,
-    name: "Beachfront Paradise",
-    location: "Florianópolis",
-    price: 220,
-    image: "/images/image5.png",
-    rating: 4.5,
-  },
-  {
-    id: 5,
-    name: "Luxury Stay",
-    location: "Curitiba",
-    price: 250,
-    image: "/images/image4.png",
-    rating: 5,
-  },
-  {
-    id: 6,
-    name: "Budget Inn",
-    location: "Porto Alegre",
-    price: "$ 100",
-    image: "/images/image6.png",
-    rating: 3.5,
-  },
-  {
-    id: 7,
-    name: "Urban Escape",
-    location: "Salvador",
-    price: 190,
-    image: "/images/image7.png",
-    rating: 4,
-  },
-  {
-    id: 8,
-    name: "Seaside Resort",
-    location: "Recife",
-    price: 210,
-    image: "/images/image8.png",
-    rating: 5,
-  },
-  {
-    id: 9,
-    name: "Cozy Cottage",
-    location: "Gramado",
-    price: 130,
-    image: "/images/image9.png",
-    rating: 3.5,
-  },
-  {
-    id: 10,
-    name: "Business Hotel",
-    location: "Belo Horizonte",
-    price: 170,
-    image: "/images/image10.png",
-    rating: 4,
-  },
-  {
-    id: 11,
-    name: "Boutique Hotel",
-    location: "Brasília",
-    price: 240,
-    image: "/images/image11.png",
-    rating: 5,
-  },
-  {
-    id: 12,
-    name: "Desert Oasis",
-    location: "Natal",
-    price: 200,
-    image: "/images/image12.png",
-    rating: 4,
-  },
-]);
-
-const destinationSearch = computed(() => {
-  if (destination.value) {
-    return hotels.filter((hotel) =>
-      hotel.location.toLowerCase().includes(destination.value.toLowerCase()),
-    );
-  }
-  if (sortBy.value) {
-    return hotels.slice().sort((a, b) => {
-      switch (sortBy.value) {
-        case "price":
-          return a.price - b.price;
-        case "rating":
-          return b.rating - a.rating;
-        case "name":
-          return a.name.localeCompare(b.name);
-        default:
-          return 0;
-      }
-    });
-  }
-  return hotels;
-});
-
-const toggleHotelSelection = (hotel) => {
-  const index = selectedHotels.value.findIndex((room) => room.id === hotel.id);
-  console.log("index", index);
-
-  if (index === -1) {
-    selectedHotels.value.push(hotel);
-    console.log(selectedHotels.value);
-  } else {
-    selectedHotels.value.splice(index, 1);
-  }
-};
-
-const toggleDropdown = () => {
-  isOpen.value = !isOpen.value;
-};
-
-const saveSelection = () => {
-  guests.value = {
-    rooms: rooms.value,
-    adults: adults.value,
-    children: children.value,
-    checkin: checkInDate.value,
-    checkout: checkOutDate.value,
-  };
-  isOpen.value = false;
-};
-
-const makeReservation = (id: number) => {
-  openModal.value = true;
-  const hotel = hotels.find((hotel) => hotel.id === id) || null;
-  reservation.value = hotel;
-};
-
-const closeModal = (payload: boolean) => {
-  openModal.value = payload;
-};
-const combinedHotels = (close) => {
-  console.log("rere", close);
-};
-</script> -->
