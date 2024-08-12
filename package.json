@@ -1,0 +1,42 @@
+{
+  "name": "hotel-reservation",
+  "version": "",
+  "description": "description",
+  "author": "Olindo Mendes <olindodecarvalho@hotmail.com>",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier .",
+    "format:write": "prettier --write ."
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "*",
+    "@nuxt/test-utils": "^3.14.0",
+    "@nuxtjs/tailwindcss": "*",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "*",
+    "eslint-config-prettier": "*",
+    "happy-dom": "^14.12.3",
+    "nuxt": "^3.12.4",
+    "playwright-core": "^1.46.0",
+    "prettier": "*",
+    "typescript": "*",
+    "vitest": "^2.0.5"
+  },
+  "dependencies": {
+    "@nuxt/http": "^0.6.4",
+    "msw": "^2.3.5",
+    "pinia": "^2.2.1",
+    "yup": "^1.4.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
+}
